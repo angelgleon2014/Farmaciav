@@ -9237,5 +9237,128 @@ class PDF extends FPDF
         }
         $this->_out($s);
     }
+
+    public function TablaTopProductosMasVendidos()
+    {
+        $login = new Login();
+
+        $codsucursal = base64_decode($_GET['codsucursal']);
+        $desde = date("Y-m-d 00:00:00", strtotime(str_replace('/', '-', $_GET['desde'])));
+        $hasta = date("Y-m-d 23:59:59", strtotime(str_replace('/', '-', $_GET['hasta'])));
+        $top_n = $_GET['top_n'];
+
+        $ventas = $login->TopProductosMasVendidos($codsucursal, $desde, $hasta, $top_n);
+
+        // LOGO
+        $this->Image("fotos/logo.jpg", 10, 10, 30);
+
+        // ENCABEZADO SUCURSAL
+        $this->SetFont('Arial', 'B', 10);
+        $this->SetXY(50, 10);
+        $this->Cell(60, 5, $this->quitarAcentos("DNI RESPONSABLE :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(60, 5, $this->quitarAcentos($_SESSION["dnipersonal"]), 0, 1);
+
+        $this->SetFont('Arial', 'B', 10);
+        $this->SetX(50);
+        $this->Cell(60, 5, $this->quitarAcentos("RUC SUCURSAL :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(60, 5, $this->quitarAcentos($_SESSION["rucsucursal"]), 0, 1);
+
+        $this->SetFont('Arial', 'B', 10);
+        $this->SetX(50);
+        $this->Cell(60, 5, $this->quitarAcentos("RAZON SOCIAL :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(60, 5, $this->quitarAcentos($_SESSION["nomsucursal"]), 0, 1);
+
+        $this->SetFont('Arial', 'B', 10);
+        $this->SetX(50);
+        $this->Cell(60, 5, $this->quitarAcentos("DIRECCION SUCURSAL :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(60, 5, $this->quitarAcentos($_SESSION["direcsucursal"]), 0, 1);
+
+        // CONTACTO
+        $this->SetXY(200, 10);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(30, 5, $this->quitarAcentos("CELULAR :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(30, 5, "929 9926 56", 0, 1);
+
+        $this->SetX(200);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(30, 5, $this->quitarAcentos("TELEFONO :"), 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(30, 5, "0000 000", 0, 1);
+
+        $this->SetX(200);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(30, 5, "EMAIL :", 0, 0);
+        $this->SetFont('Arial', '', 10);
+        $this->Cell(30, 5, "WCC@GMAIL.COM", 0, 1);
+
+        // TÍTULO
+        $this->Ln(10);
+        $this->SetFont('Arial', 'B', 13);
+        $this->Cell(0, 7, $this->quitarAcentos("TOP $top_n PRODUCTOS MAS VENDIDOS"), 0, 1, 'C');
+        $this->SetFont('Arial', '', 11);
+        $this->Cell(0, 6, $this->quitarAcentos("Desde " . date("d-m-Y", strtotime($desde)) . " Hasta " . date("d-m-Y", strtotime($hasta))), 0, 1, 'C');
+        $this->SetFont('Arial', 'B', 11);
+        $this->Cell(0, 6, $this->quitarAcentos("SUCURSAL: " . $_SESSION["nomsucursal"]), 0, 1, 'C');
+        $this->Ln(5);
+
+        $pageWidth = $this->GetPageWidth();
+        $tableWidth = 250;
+        $startX = ($pageWidth - $tableWidth) / 2;
+
+        $this->SetFont('Arial', 'B', 10);
+        $this->SetFillColor(255, 204, 0);
+        $this->SetX($startX);
+        $this->Cell(10, 7, '#', 1, 0, 'C', true);
+        $this->Cell(200, 7, 'Producto', 1, 0, 'C', true);
+        $this->Cell(40, 7, 'Cantidad Vendida', 1, 1, 'C', true);
+
+        $this->SetFont('Arial', '', 10);
+        $total = 0;
+        if (empty($ventas)) {
+            $this->SetX($startX);
+            $this->Cell(250, 6, $this->quitarAcentos("No se encontraron productos vendidos en el rango de fechas."), 1, 1, 'C');
+        } else {
+            $i = 1;
+            foreach ($ventas as $venta) {
+                $this->SetX($startX);
+                $this->Cell(10, 6, $i++, 1, 0, 'C');
+                $this->Cell(200, 6, $this->quitarAcentos($venta['producto']), 1);
+                $this->Cell(40, 6, $venta['cantidad_total_vendida'], 1, 1, 'C');
+                $total += $venta['cantidad_total_vendida'];
+            }
+
+            $this->SetFont('Arial', 'B', 10);
+            $this->SetX($startX);
+            $this->Cell(210, 7, $this->quitarAcentos('TOTAL GENERAL'), 1, 0, 'R', true);
+            $this->Cell(40, 7, $total, 1, 1, 'C', true);
+        }
+
+        $this->Ln(10);
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(0, 6, $this->quitarAcentos("ELABORADO POR: ") . $this->quitarAcentos($_SESSION["nombres"]), 0, 1);
+        $this->Cell(0, 6, $this->quitarAcentos("FECHA/HORA ELABORACION: ") . date("d-m-Y h:i:s A"), 0, 1);
+        $this->Cell(0, 6, $this->quitarAcentos("RECIBIDO: __________________________"), 0, 1, 'R');
+    }
+
+    public function quitarAcentos($cadena)
+    {
+        $acentos = [
+            'Á'=>'A', 'É'=>'E', 'Í'=>'I', 'Ó'=>'O', 'Ú'=>'U',
+            'á'=>'a', 'é'=>'e', 'í'=>'i', 'ó'=>'o', 'ú'=>'u',
+            'Ñ'=>'N', 'ñ'=>'n',
+            'Ü'=>'U', 'ü'=>'u'
+        ];
+
+        return strtr($cadena, $acentos);
+    }
+
+
+
+
     // FIN Class PDF
 }

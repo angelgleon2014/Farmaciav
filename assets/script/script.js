@@ -11,6 +11,36 @@ function set_salas_mesas(element) {
 }
 
 
+function BuscaMasVendidos() {
+    var codsucursal = $('#codsucursal').val();
+    var desde = $('#desde').val();
+    var hasta = $('#hasta').val();
+    var top_n = $('select#top_n').val();
+
+    console.log("📦 codsucursal:", codsucursal); // <- NUEVO
+
+    if (codsucursal == "" || desde == "" || hasta == "" || top_n == "") {
+        Swal.fire({
+            title: "¡ADVERTENCIA!",
+            text: "PARA REALIZAR LA BÚSQUEDA DEBES SELECCIONAR LA SUCURSAL, FECHAS Y EL NÚMERO DE PRODUCTOS A MOSTRAR.",
+            type: "warning",
+            confirmButtonClass: "btn btn-blue",
+            confirmButtonText: "¡Entendido!"
+        });
+        return false;
+    }
+
+    var dataString = 'BuscaMasVendidos=si&codsucursal=' + codsucursal + '&desde=' + desde + '&hasta=' + hasta + '&top_n=' + top_n;
+
+    $.ajax({
+        type: "GET",
+        url: "busquedas.php",
+        data: dataString,
+        success: function(response) {
+            $('#muestramasvendidos').html(response);
+        }
+    });
+}
 
 /* FUNCION JQUERY PARA VALIDAR ACCESO DE USUARIOS*/
 $('document').ready(function () {

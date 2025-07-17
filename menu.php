@@ -318,6 +318,7 @@ if(isset($_SESSION['acceso'])) {
                         <li><a href="buscaproductoslaboratorios">Por Laboratorios</a></li>
                         <li><a href="productosvendidos">Vendidos</a></li>
                         <li><a href="productosvencidos">Vencidos</a></li>
+                        <li><a href="productosmasvendidos">Top Productos Vendidos</a></li>
                     </ul>
                 </li>
 

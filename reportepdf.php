@@ -436,6 +436,14 @@ $casos = array(
                                     'output' => array('Grafico de Ventas Anual.pdf', 'I')
 
                                   ),
+                  'TOP_PRODUCTOS_MAS_VENDIDOS' => array(
+                    
+                                    'medidas' => array('L', 'mm', 'LEGAL'),
+
+                                    'func' => 'TablaTopProductosMasVendidos',
+
+                                    'output' => array('Top Productos Más Vendidos.pdf', 'I')
+                                ),
 
                 );
 

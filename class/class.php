@@ -10777,7 +10777,49 @@ LEFT JOIN cajas ON cajas.codcaja=ventas.codcaja LEFT JOIN clientes ON ventas.cod
     }
     ########################### FIN DE FUNCION PARA CONTAR REGISTROS ##################################
 
+    public function TopProductosMasVendidos($codsucursal, $desde, $hasta, $top_n) {
+        try {
+            $sql = "
+                SELECT
+                    p.producto,  -- CORREGIDO: Usar 'producto' de la tabla 'productos'
+                    SUM(dp.cantventa) AS cantidad_total_vendida -- CORREGIDO: Usar 'cantventa' de 'detalleventas'
+                FROM
+                    detalleventas dp
+                JOIN
+                    ventas v ON dp.codventa = v.codventa -- CORREGIDO: Usar 'codventa' en ambas tablas
+                JOIN
+                    productos p ON dp.codproductov = p.codproducto
+                WHERE
+                    v.codsucursal = :codsucursal AND
+                    v.fechaventa BETWEEN :desde AND :hasta -- CORREGIDO: Usar 'fechaventa' de la tabla 'ventas'
+                GROUP BY
+                    p.codproducto, p.producto -- CORREGIDO: Agrupar por 'producto' de la tabla 'productos'
+                ORDER BY
+                    cantidad_total_vendida DESC
+                LIMIT :top_n
+            ";
 
+            // --- Mantenemos el código de depuración si lo tienes, es muy útil ---
+            error_log("TOP_PRODUCTOS_MAS_VENDIDOS - SQL Query: " . $sql);
+            error_log("TOP_PRODUCTOS_MAS_VENDIDOS - Parameters:");
+            error_log("  codsucursal: " . $codsucursal);
+            error_log("  desde (PHP): " . $desde);
+            error_log("  hasta (PHP): " . $hasta);
+            error_log("  top_n: " . $top_n);
+            // --- FIN DE CÓDIGO DE DEPURACIÓN ---
+
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->bindParam(':codsucursal', $codsucursal, PDO::PARAM_STR);
+            $stmt->bindParam(':desde', $desde, PDO::PARAM_STR);
+            $stmt->bindParam(':hasta', $hasta, PDO::PARAM_STR);
+            $stmt->bindParam(':top_n', $top_n, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en TopProductosMasVendidos: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ############################# AQUI TERMINA LA CLASE LOGIN ################################
 ?>

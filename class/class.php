@@ -10820,6 +10820,136 @@ LEFT JOIN cajas ON cajas.codcaja=ventas.codcaja LEFT JOIN clientes ON ventas.cod
             return false;
         }
     }
+
+    public function RegistrarGastos()
+    {
+        self::SetNames();
+        $db = $this->dbh;
+
+        try {
+            $db->beginTransaction();
+
+            // Insertar gasto (cabecera)
+            $sql = "INSERT INTO gastos (codsucursal, proveedor, descripcion, monto_total, fecha_gasto, tipo_gasto, metodo_pago, observaciones, creado_por)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(array(
+                $_POST["codsucursal"],
+                $_POST["proveedor"],
+                $_POST["descripcion"],
+                $_POST["monto_total"],
+                $_POST["fecha_gasto"],
+                $_POST["tipo_gasto"],
+                $_POST["metodo_pago"],
+                $_POST["observaciones"],
+                $_POST["creado_por"]
+            ));
+
+            $idgasto = $db->lastInsertId();            
+
+            $db->commit();
+            echo "<script>
+                alert('¡Gasto guardado exitosamente!');
+                window.location.href = window.location.pathname;
+            </script>";
+            exit;
+        } catch (Exception $e) {
+            $db->rollBack();
+            echo "0"; // error
+        }
+    }
+
+    public function ListarGastosPorRango($codsucursal, $desde, $hasta)
+    {
+        self::SetNames();
+
+        $sql = "SELECT 
+                    g.idgasto,
+                    g.proveedor,
+                    g.descripcion,
+                    g.monto_total,
+                    DATE_FORMAT(g.fecha_gasto, '%d/%m/%Y') AS fecha_gasto,
+                    g.tipo_gasto,
+                    g.metodo_pago,
+                    g.observaciones,
+                    g.codsucursal,
+                    g.creado_por,
+                    DATE_FORMAT(g.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro
+                FROM gastos g
+                WHERE g.codsucursal = ?
+                AND g.fecha_gasto BETWEEN ? AND ?
+                ORDER BY g.fecha_gasto DESC";
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->bindParam(1, $codsucursal);
+        $stmt->bindParam(2, $desde);
+        $stmt->bindParam(3, $hasta);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function ActualizarGasto() 
+    {
+        self::SetNames();
+        $sql = "UPDATE gastos SET 
+                    proveedor = ?, 
+                    descripcion = ?, 
+                    monto_total = ?, 
+                    fecha_gasto = ?, 
+                    tipo_gasto = ?, 
+                    metodo_pago = ?, 
+                    observaciones = ?, 
+                    codsucursal = ?, 
+                    creado_por = ?
+                WHERE idgasto = ?";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute([
+            $_POST["proveedor"],
+            $_POST["descripcion"],
+            $_POST["monto_total"],
+            $_POST["fecha_gasto"],
+            $_POST["tipo_gasto"],
+            $_POST["metodo_pago"],
+            $_POST["observaciones"],
+            $_POST["codsucursal"],
+            $_POST["creado_por"],
+            $_POST["idgasto"]
+        ]);
+        echo "<script>alert('Gasto actualizado correctamente');window.location='gastos.php';</script>";
+    }
+
+    public function ObtenerGastoPorId($idgasto) 
+    {
+        self::SetNames();
+
+        $sql = "SELECT * FROM gastos WHERE idgasto = ?";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute([$idgasto]);
+
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row;
+        } else {
+            return null;
+        }
+    }
+
+    public function EliminarGasto($idgasto) 
+    {
+        self::SetNames();
+        error_log("Ejecutando DELETE para idgasto: $idgasto");
+        $sql = "DELETE FROM gastos WHERE idgasto = ?";
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute([$idgasto]);
+        
+
+    }
+
+
+
+
+
+
 }
 ############################# AQUI TERMINA LA CLASE LOGIN ################################
 ?>

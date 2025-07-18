@@ -100,6 +100,16 @@ if(isset($_SESSION['acceso'])) {
 
         <li class="has_sub">
             <a href="javascript:void(0);" class="waves-effect">
+                <i class="fa fa-money"></i> <span> Gastos </span> <span class="pull-right"><i class="ion ion-plus"></i></span>
+            </a>
+            <ul class="list-unstyled" style="">
+                <li><a href="forgasto">Nuevo Gasto</a></li>
+                <li><a href="gastos">Consulta de Gastos</a></li>
+            </ul>
+        </li>
+
+        <li class="has_sub">
+            <a href="javascript:void(0);" class="waves-effect">
                 <i class="fa fa-cart-arrow-down"></i><span> Ventas </span><span class="pull-right"><i
                         class="ion ion-plus"></i></span></a>
             <ul class="list-unstyled" style="">
@@ -281,6 +291,17 @@ if(isset($_SESSION['acceso'])) {
 
         <li class="has_sub">
             <a href="javascript:void(0);" class="waves-effect">
+                <i class="fa fa-money"></i> <span> Gastos </span> <span class="pull-right"><i class="ion ion-plus"></i></span>
+            </a>
+            <ul class="list-unstyled" style="">
+                <li><a href="forgasto">Nuevo Gasto</a></li>
+                <li><a href="gastos">Consulta de Gastos</a></li>
+            </ul>
+        </li>
+
+
+        <li class="has_sub">
+            <a href="javascript:void(0);" class="waves-effect">
                 <i class="fa fa-cart-arrow-down"></i><span> Ventas </span><span class="pull-right"><i
                         class="ion ion-plus"></i></span></a>
             <ul class="list-unstyled" style="">
@@ -412,6 +433,15 @@ if(isset($_SESSION['acceso'])) {
             </ul>
         </li>
 
+        <li class="has_sub">
+            <a href="javascript:void(0);" class="waves-effect">
+                <i class="fa fa-money"></i> <span> Gastos </span> <span class="pull-right"><i class="ion ion-plus"></i></span>
+            </a>
+            <ul class="list-unstyled" style="">
+                <li><a href="forgasto">Nuevo Gasto</a></li>
+                <li><a href="gastos">Consulta de Gastos</a></li>
+            </ul>
+        </li>
 
         <li class="has_sub">
             <a href="javascript:void(0);" class="waves-effect">
@@ -547,6 +577,16 @@ if(isset($_SESSION['acceso'])) {
                 <li><a href="compras"> Consulta de Compras</a></li>
                 <li><a href="detallescompras">Detalles de Compras</a></li>
                 <li><a href="compraspendientes"> Cuentas por Pagar</a></li>
+            </ul>
+        </li>
+
+        <li class="has_sub">
+            <a href="javascript:void(0);" class="waves-effect">
+                <i class="fa fa-money"></i> <span> Gastos </span> <span class="pull-right"><i class="ion ion-plus"></i></span>
+            </a>
+            <ul class="list-unstyled" style="">
+                <li><a href="forgasto">Nuevo Gasto</a></li>
+                <li><a href="gastos">Consulta de Gastos</a></li>
             </ul>
         </li>
 

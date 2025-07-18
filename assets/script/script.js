@@ -11,6 +11,38 @@ function set_salas_mesas(element) {
 }
 
 
+function BuscarGastos() {
+    var codsucursal = $('#codsucursal').val();
+    var desde = $('#desde').val();
+    var hasta = $('#hasta').val();
+   
+
+    console.log("📦 codsucursal:", codsucursal); // <- NUEVO
+
+    if (codsucursal == "" || desde == "" || hasta == "") {
+        Swal.fire({
+            title: "¡ADVERTENCIA!",
+            text: "PARA REALIZAR LA BÚSQUEDA DEBES SELECCIONAR LA SUCURSAL, FECHAS Y EL NÚMERO DE PRODUCTOS A MOSTRAR.",
+            type: "warning",
+            confirmButtonClass: "btn btn-blue",
+            confirmButtonText: "¡Entendido!"
+        });
+        return false;
+    }
+
+    var dataString = 'BuscaGastos=si&codsucursal=' + codsucursal + '&desde=' + desde + '&hasta=' + hasta;
+
+
+    $.ajax({
+        type: "GET",
+        url: "buscargastos.php",
+        data: dataString,
+        success: function(response) {
+            $('#tabla_gastos').html(response);
+        }
+    });
+}
+
 function BuscaMasVendidos() {
     var codsucursal = $('#codsucursal').val();
     var desde = $('#desde').val();

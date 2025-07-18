@@ -10864,21 +10864,21 @@ LEFT JOIN cajas ON cajas.codcaja=ventas.codcaja LEFT JOIN clientes ON ventas.cod
         self::SetNames();
 
         $sql = "SELECT 
-                    g.idgasto,
-                    g.proveedor,
-                    g.descripcion,
-                    g.monto_total,
-                    DATE_FORMAT(g.fecha_gasto, '%d/%m/%Y') AS fecha_gasto,
-                    g.tipo_gasto,
-                    g.metodo_pago,
-                    g.observaciones,
-                    g.codsucursal,
-                    g.creado_por,
-                    DATE_FORMAT(g.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro
-                FROM gastos g
-                WHERE g.codsucursal = ?
-                AND g.fecha_gasto BETWEEN ? AND ?
-                ORDER BY g.fecha_gasto DESC";
+            g.idgasto,
+            g.proveedor,
+            g.descripcion,
+            g.monto_total,
+            g.fecha_gasto,
+            g.tipo_gasto,
+            g.metodo_pago,
+            g.observaciones,
+            g.codsucursal,
+            g.creado_por,
+            DATE_FORMAT(g.fecha_registro, '%d/%m/%Y %H:%i:%s') AS fecha_registro
+        FROM gastos g
+        WHERE g.codsucursal = ?
+        AND g.fecha_gasto BETWEEN ? AND ?
+        ORDER BY g.fecha_gasto DESC";
 
         $stmt = $this->dbh->prepare($sql);
         $stmt->bindParam(1, $codsucursal);

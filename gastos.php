@@ -316,14 +316,29 @@ if (isset($_SESSION['acceso'])) {
                          </div>
                            <div id="tabla_gastos"></div>
 
-                                <div class="text-center" style="margin-top: 20px;">
+                                <!-- <div class="text-center" style="margin-top: 20px;">
                                     <a class="btn btn-success" id="btnExportarPdf">
                                         <i class="fa fa-file-pdf-o"></i> Exportar Pdf
                                     </a>
                                     <a class="btn btn-primary" id="btnExportarExcel" style="margin-left: 10px;">
                                         <i class="fa fa-file-excel-o"></i> Exportar Excel
                                     </a>
+                                </div> -->
+
+                               <?php
+                                $codsucursal_encoded = base64_encode($_SESSION['codsucursal']);
+                                ?>
+
+                                <div class="text-center" >
+                                    <button class="btn btn-danger" id="btn-pdf">
+                                        <i class="fa fa-file-pdf-o"></i> Exportar PDF
+                                    </button>
+
+                                    <button class="btn btn-success" id="btn-excel">
+                                        <i class="fa fa-file-excel-o"></i> Exportar Excel
+                                    </button>
                                 </div>
+ 
                             </form>
                    </div>
                </div>
@@ -367,41 +382,19 @@ if (isset($_SESSION['acceso'])) {
          </script> 
 <?php } ?>
 <script>
-    $('#btnExportarPdf').on('click', function(e) {
-        e.preventDefault();
+$("#btn-pdf").click(function() {
+    let desde = $("#desde").val();
+    let hasta = $("#hasta").val();
+    let codsucursal = "<?= base64_encode($_SESSION['codsucursal']) ?>";
+    window.open(`exportar_gastos_pdf.php?codsucursal=${codsucursal}&desde=${desde}&hasta=${hasta}`, '_blank');
+});
 
-        const codsucursal = $('#codsucursal').val();
-        const desde = $('#desde').val();
-        const hasta = $('#hasta').val();
-        const top_n = $('#top_n').val();
-        const tipo = btoa('TOP_PRODUCTOS_MAS_VENDIDOS');
-
-        if (!codsucursal || !desde || !hasta || !top_n) {
-            alert("Faltan parámetros para exportar el PDF.");
-            return;
-        }
-
-        const url = `reporte_pdf.php?tipo=${tipo}&codsucursal=${codsucursal}&desde=${desde}&hasta=${hasta}&top_n=${top_n}`;
-        window.open(url, '_blank');
-    });
+$("#btn-excel").click(function() {
+    let desde = $("#desde").val();
+    let hasta = $("#hasta").val();
+    let codsucursal = "<?= base64_encode($_SESSION['codsucursal']) ?>";
+    window.open(`exportar_gastos_excel.php?codsucursal=${codsucursal}&desde=${desde}&hasta=${hasta}`, '_blank');
+});
 </script>
 
-<script>
-    $('#btnExportarExcel').on('click', function(e) {
-        e.preventDefault();
-
-        const codsucursal = $('#codsucursal').val();
-        const desde = $('#desde').val();
-        const hasta = $('#hasta').val();
-        const top_n = $('#top_n').val();
-
-        if (!codsucursal || !desde || !hasta || !top_n) {
-            alert("Faltan parámetros para exportar el Excel.");
-            return;
-        }
-
-        const url = `exportar_excel_top_productos.php?codsucursal=${codsucursal}&desde=${desde}&hasta=${hasta}&top_n=${top_n}`;
-        window.open(url, '_blank');
-    });
-</script>
 
